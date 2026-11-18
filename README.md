@@ -62,3 +62,15 @@ docker exec -it sep-postgres psql -U parking_user -d parking_db
 docker exec -it sep-postgres psql -U psp_user -d psp_db
 docker exec -it sep-postgres psql -U bank_user -d bank_db
 ```
+
+
+
+
+Prvi put (iz foldera `backend`, u cmd-u), connection stringovi iz `.env`:
+
+```cmd
+for /f "tokens=1,* delims==" %a in ('findstr /b "PARKING_DB_PASSWORD=" ..\.env') do dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5434;Database=parking_db;Username=parking_user;Password=%b" --project src/Parking.Api
+for /f "tokens=1,* delims==" %a in ('findstr /b "PSP_DB_PASSWORD=" ..\.env') do dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5434;Database=psp_db;Username=psp_user;Password=%b" --project src/Psp.Api
+for /f "tokens=1,* delims==" %a in ('findstr /b "BANK_DB_PASSWORD=" ..\.env') do dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5434;Database=bank_db;Username=bank_user;Password=%b" --project src/Bank.Api
+```
+
