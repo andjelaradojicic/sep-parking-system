@@ -173,6 +173,83 @@ namespace Psp.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Psp.Api.Domain.PspTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character(3)")
+                        .HasColumnName("currency")
+                        .IsFixedLength();
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(140)
+                        .HasColumnType("character varying(140)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("merchant_id");
+
+                    b.Property<string>("MerchantOrderId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("merchant_order_id");
+
+                    b.Property<DateTimeOffset>("MerchantTimestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("merchant_timestamp");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_psp_transactions");
+
+                    b.HasIndex("MerchantId", "MerchantOrderId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_psp_transactions_merchant_id_merchant_order_id");
+
+                    b.ToTable("psp_transactions", (string)null);
+                });
+
             modelBuilder.Entity("Psp.Api.Domain.MerchantPaymentMethod", b =>
                 {
                     b.HasOne("Psp.Api.Domain.Merchant", "Merchant")
@@ -192,6 +269,18 @@ namespace Psp.Api.Migrations
                     b.Navigation("Merchant");
 
                     b.Navigation("PaymentMethod");
+                });
+
+            modelBuilder.Entity("Psp.Api.Domain.PspTransaction", b =>
+                {
+                    b.HasOne("Psp.Api.Domain.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_psp_transactions_merchants_merchant_id");
+
+                    b.Navigation("Merchant");
                 });
 
             modelBuilder.Entity("Psp.Api.Domain.Merchant", b =>

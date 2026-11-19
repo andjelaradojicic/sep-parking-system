@@ -15,7 +15,7 @@ public static class DbSeeder
         var db = scope.ServiceProvider.GetRequiredService<PspDbContext>();
         var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-        await db.Database.MigrateAsync();
+       // await db.Database.MigrateAsync();
 
         if (await db.Merchants.AnyAsync(m => m.MerchantId == ParkingMerchantId))
             return;
